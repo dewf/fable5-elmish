@@ -5,6 +5,7 @@ open Elmish.React
 open Feliz
 open Feliz.Router
 open NativeStuff
+open CounterComponent
 
 type State = {
     Count: int
@@ -17,6 +18,7 @@ type Msg =
     | Decrement
     | UrlChanged of string list
     | NavigateHome
+    | SubcounterEvent of int
 
 let init () =
     { Count = 0
@@ -37,6 +39,9 @@ let update (msg: Msg) (state: State) =
             LocationHistory = nextHistory }, Cmd.none
     | NavigateHome ->
         state, Cmd.navigate()
+    | SubcounterEvent value ->
+        printfn "subcounter event occurred! %d" value
+        state, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
     let content =
@@ -52,6 +57,7 @@ let render (state: State) (dispatch: Msg -> unit) =
         | [] -> // home
             Html.div [
                 Html.h3 "Home"
+
                 Html.button [
                     prop.onClick (fun _ -> dispatch Decrement)
                     prop.text "Decrement"
@@ -64,13 +70,22 @@ let render (state: State) (dispatch: Msg -> unit) =
                     prop.onClick (fun _ -> dispatch Increment)
                     prop.text "Increment"
                 ]
+
                 Html.br []
+
+                Html.div [
+                    CounterComponent { Initial = 0; OnChanged = (SubcounterEvent >> dispatch) }
+                ]
+
+                Html.br []
+
                 Html.div [
                     Html.a [
                         prop.href "#/users/345"
                         prop.text "test user page OK?"
                     ]
                 ]
+
                 Html.div [
                     for location in state.LocationHistory ->
                         Html.div [

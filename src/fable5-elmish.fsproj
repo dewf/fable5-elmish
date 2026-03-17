@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Include="NativeStuff.fs" />
+    <Compile Include="CounterComponent.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
 
@@ -16,6 +17,7 @@
     <PackageReference Include="Fable.Core" Version="4.5.0" />
     <PackageReference Include="Fable.Elmish.React" Version="5.0.1" />
     <PackageReference Include="Feliz" Version="3.1.1" />
+    <PackageReference Include="Feliz.UseElmish" Version="4.1.0" />
   </ItemGroup>
 
 </Project>
