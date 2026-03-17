@@ -33,7 +33,6 @@ let private update (props: Props) msg model =
         { model with Count = newCount }, Cmd.none
 
 let private render state dispatch =
-    printfn "subcounter rendered"
     Html.div [
       Html.button [ prop.text "-"; prop.onClick (fun _ -> dispatch Decrement) ]
       Html.span [ prop.style [ style.margin 10 ]; prop.text (string state.Count) ]
@@ -52,4 +51,5 @@ let CounterComponent (props: Props) =
             update props,
             [| box props.Initial |]
         )
+    // will run every time without memoization :(
     render state dispatch
