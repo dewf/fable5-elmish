@@ -21,17 +21,17 @@ let update (msg: Msg) count =
 
 let view model dispatch =
     Html.div [
-        Html.button [ 
-            prop.onClick (fun _ -> dispatch Increment)
-            prop.text "Inc"
+        Html.button [
+            prop.onClick (fun _ -> dispatch Decrement)
+            prop.text "Decrement"
         ]
         Html.span [
             prop.className "cool"
             prop.text (string model)
         ]
         Html.button [
-            prop.onClick (fun _ -> dispatch Decrement)
-            prop.text "Dec"
+            prop.onClick (fun _ -> dispatch Increment)
+            prop.text "Increment"
         ]
     ]
 
