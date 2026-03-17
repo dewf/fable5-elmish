@@ -1,6 +1,6 @@
 class CoolClass {
     static evaluate(value: number): number {
-        console.log("your value is: " + value + "! 😎");
+        console.log(`evaluate(${value})`);
         return value + 1;
     }
 }
