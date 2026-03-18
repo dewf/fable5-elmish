@@ -11,6 +11,7 @@ type State = {
     Count: int
     CurrentUrl: string list
     LocationHistory: string list list
+    LastCounterEvent: (int * int) option
 }
 
 type Msg =
@@ -18,12 +19,13 @@ type Msg =
     | Decrement
     | UrlChanged of string list
     | NavigateHome
-    | SubcounterEvent of int
+    | SubcounterEvent of int * int
 
 let init () =
     { Count = 0
       CurrentUrl = Router.currentUrl ()
-      LocationHistory = [] }, Cmd.none
+      LocationHistory = []
+      LastCounterEvent = None }, Cmd.none
 
 let update (msg: Msg) (state: State) =
     match msg with
@@ -39,11 +41,12 @@ let update (msg: Msg) (state: State) =
             LocationHistory = nextHistory }, Cmd.none
     | NavigateHome ->
         state, Cmd.navigate()
-    | SubcounterEvent value ->
+    | SubcounterEvent (which, value) ->
         printfn "subcounter event occurred! %d" value
-        state, Cmd.none
+        { state with LastCounterEvent = Some (which, value) }, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
+    printfn "outer render ran"
     let content =
         match state.CurrentUrl with
         | [ "users"; Route.Int userId ] ->
@@ -74,10 +77,22 @@ let render (state: State) (dispatch: Msg -> unit) =
                 Html.br []
 
                 Html.div [
-                    CounterComponent { Initial = 0; OnChanged = (SubcounterEvent >> dispatch) }
+                    let subcounterFunc (id: int) =
+                        (fun x -> SubcounterEvent (id, x) |> dispatch)
+                    CounterComponent {| Initial = 0; Step = 1; OnChanged = subcounterFunc 1 |} // nb: anonymous record, following Feliz docs
+                    CounterComponent {| Initial = 10; Step = 5; OnChanged = subcounterFunc 2 |}
                 ]
 
                 Html.br []
+
+                Html.div [
+                    Html.p "last subcounter event:"
+                    match state.LastCounterEvent with
+                    | Some (id, value) ->
+                        Html.p (sprintf "ID %d, value %d" id value)
+                    | None ->
+                        Html.p "(none)"
+                ]
 
                 Html.div [
                     Html.a [
